@@ -348,7 +348,6 @@ class Content extends React.Component {
     // cases we don't need to trigger any changes, since our internal model is
     // already up to date, but we do want to update the native selection again
     // to make sure it is in sync. (2017/10/16)
-
     if (handler == 'onSelect' && !this.tmp.isComposing) {
       const { editor } = this.props
       const { value } = editor
