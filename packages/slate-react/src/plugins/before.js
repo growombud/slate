@@ -118,6 +118,7 @@ function BeforePlugin() {
    */
 
   function onCompositionEnd(event, editor, next) {
+    console.log('onCompositionEnd', event)
     const n = compositionCount
 
     // The `count` check here ensures that if another composition starts
@@ -154,6 +155,7 @@ function BeforePlugin() {
    */
 
   function onCompositionStart(event, editor, next) {
+    console.log('onCompositionStart', event)
     isComposing = true
     compositionCount++
 
@@ -169,7 +171,7 @@ function BeforePlugin() {
       // (because it cannot find <span> nodes in DOM). This is a workaround that
       // erases selection as soon as composition starts and preventing <spans>
       // to be dropped.
-      // editor.delete()
+      editor.delete()
     }
 
     debug('onCompositionStart', { event })
