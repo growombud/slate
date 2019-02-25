@@ -161,6 +161,7 @@ function BeforePlugin() {
     const { selection } = value
 
     if (!selection.isCollapsed) {
+      console.log('DELETE')
       // https://github.com/ianstormtaylor/slate/issues/1879
       // When composition starts and the current selection is not collapsed, the
       // second composition key-down would drop the text wrapping <spans> which
@@ -168,7 +169,7 @@ function BeforePlugin() {
       // (because it cannot find <span> nodes in DOM). This is a workaround that
       // erases selection as soon as composition starts and preventing <spans>
       // to be dropped.
-      editor.delete()
+      // editor.delete()
     }
 
     debug('onCompositionStart', { event })
