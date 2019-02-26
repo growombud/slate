@@ -325,7 +325,6 @@ class Content extends React.Component {
 
   onEvent(handler, event) {
     console.log('onEvent')
-
     debug('onEvent', handler)
 
     if (handler == 'onCompositionStart') {
