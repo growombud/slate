@@ -51,6 +51,7 @@ function BeforePlugin() {
    */
 
   function onBeforeInput(event, editor, next) {
+    console.log('onBeforeInput')
     const isSynthetic = !!event.nativeEvent
     if (editor.readOnly) return
 
@@ -118,6 +119,7 @@ function BeforePlugin() {
    */
 
   function onCompositionEnd(event, editor, next) {
+    console.log('onCompositionEnd')
     const n = compositionCount
 
     // The `count` check here ensures that if another composition starts
@@ -154,6 +156,7 @@ function BeforePlugin() {
    */
 
   function onCompositionStart(event, editor, next) {
+    console.log('onCompositionStart')
     isComposing = true
     compositionCount++
 
