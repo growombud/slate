@@ -150,7 +150,7 @@ class Content extends React.Component {
 
     // .getSelection() can return null in some cases
     // https://bugzilla.mozilla.org/show_bug.cgi?id=827585
-    if (!native) return
+    if (!native || editor.isComposing()) return
 
     const { rangeCount, anchorNode } = native
 
