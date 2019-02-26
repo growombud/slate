@@ -18,8 +18,8 @@ export const output = `
 <div data-slate-editor="true" contenteditable="true" role="textbox">
   <div style="position:relative">
     <span>
-      <span>
-        <span data-slate-zero-width="n">&#xFEFF;<br /></span>
+      <span data-slate-leaf="true">
+        <span data-slate-zero-width="n" data-slate-length="0">&#xFEFF;<br /></span>
       </span>
     </span>
   </div>

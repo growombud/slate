@@ -126,14 +126,6 @@ function BeforePlugin() {
     window.requestAnimationFrame(() => {
       if (compositionCount > n) return
       isComposing = false
-
-      // HACK: we need to re-render the editor here so that it will update its
-      // placeholder in case one is currently rendered. This should be handled
-      // differently ideally, in a less invasive way?
-      // (apply force re-render if isComposing changes)
-      if (editor.state.isComposing) {
-        editor.setState({ isComposing: false })
-      }
     })
 
     debug('onCompositionEnd', { event })
@@ -164,14 +156,6 @@ function BeforePlugin() {
   function onCompositionStart(event, editor, next) {
     isComposing = true
     compositionCount++
-
-    // HACK: we need to re-render the editor here so that it will update its
-    // placeholder in case one is currently rendered. This should be handled
-    // differently ideally, in a less invasive way?
-    // (apply force re-render if isComposing changes)
-    if (!editor.state.isComposing) {
-      editor.setState({ isComposing: true })
-    }
 
     const { value } = editor
     const { selection } = value
@@ -513,7 +497,7 @@ function BeforePlugin() {
 /**
  * Export.
  *
- * @type {Object}
+ * @type {Function}
  */
 
 export default BeforePlugin
