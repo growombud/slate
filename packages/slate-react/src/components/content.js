@@ -69,6 +69,7 @@ class Content extends React.Component {
 
   tmp = {
     isUpdatingSelection: false,
+    isComposing: false,
   }
 
   /**
@@ -151,7 +152,7 @@ class Content extends React.Component {
 
     // COMPAT: In Firefox, there's a but where `getSelection` can return `null`.
     // https://bugzilla.mozilla.org/show_bug.cgi?id=827585 (2018/11/07)
-    if (!native) {
+    if (!native || editor.isComposing()) {
       return
     }
 
@@ -325,6 +326,14 @@ class Content extends React.Component {
   onEvent(handler, event) {
     debug('onEvent', handler)
 
+    if (handler == 'onCompositionStart') {
+      this.tmp.isComposing = true
+    }
+
+    if (handler == 'onCompositionEnd') {
+      window.requestAnimationFrame(() => (this.tmp.isComposing = false))
+    }
+
     // Ignore `onBlur`, `onFocus` and `onSelect` events generated
     // programmatically while updating selection.
     if (
@@ -339,7 +348,7 @@ class Content extends React.Component {
     // cases we don't need to trigger any changes, since our internal model is
     // already up to date, but we do want to update the native selection again
     // to make sure it is in sync. (2017/10/16)
-    if (handler == 'onSelect') {
+    if (handler == 'onSelect' && !this.tmp.isComposing) {
       const { editor } = this.props
       const { value } = editor
       const { selection } = value
