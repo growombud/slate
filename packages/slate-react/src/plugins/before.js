@@ -156,7 +156,6 @@ function BeforePlugin() {
   function onCompositionStart(event, editor, next) {
     isComposing = true
     compositionCount++
-
     const { value } = editor
     const { selection } = value
 
