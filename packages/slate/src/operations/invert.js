@@ -42,42 +42,21 @@ function invertOperation(op) {
         return op
       }
 
-      let inversePath = newPath
-      let inverseNewPath = path
+      // Get the true path that the moved node ended up at
+      const inversePath = PathUtils.transform(path, op).first()
 
-      const pathLast = path.size - 1
-      const newPathLast = newPath.size - 1
+      // Get the true path we are trying to move back to
+      // We transform the right-sibling of the path
+      // This will end up at the operation.path most of the time
+      // But if the newPath is a left-sibling or left-ancestor-sibling, this will account for it
+      const transformedSibling = PathUtils.transform(
+        PathUtils.increment(path),
+        op
+      ).first()
 
-      // If the node's old position was a left sibling of an ancestor of
-      // its new position, we need to adjust part of the path by -1.
-      if (
-        path.size < inversePath.size &&
-        path.slice(0, pathLast).every((e, i) => e == inversePath.get(i)) &&
-        path.last() < inversePath.get(pathLast)
-      ) {
-        inversePath = inversePath
-          .slice(0, pathLast)
-          .concat(inversePath.get(pathLast) - 1)
-          .concat(inversePath.slice(pathLast + 1, inversePath.size))
-      }
-
-      // If the node's new position is an ancestor of the old position,
-      // or a left sibling of an ancestor of its old position, we need
-      // to adjust part of the path by 1.
-      if (
-        newPath.size < inverseNewPath.size &&
-        newPath
-          .slice(0, newPathLast)
-          .every((e, i) => e == inverseNewPath.get(i)) &&
-        newPath.last() <= inverseNewPath.get(newPathLast)
-      ) {
-        inverseNewPath = inverseNewPath
-          .slice(0, newPathLast)
-          .concat(inverseNewPath.get(newPathLast) + 1)
-          .concat(inverseNewPath.slice(newPathLast + 1, inverseNewPath.size))
-      }
-
-      const inverse = op.set('path', inversePath).set('newPath', inverseNewPath)
+      const inverse = op
+        .set('path', inversePath)
+        .set('newPath', transformedSibling)
       return inverse
     }
 
