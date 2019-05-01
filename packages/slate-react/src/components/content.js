@@ -163,7 +163,10 @@ class Content extends React.Component {
     const window = getWindow(this.element)
     const native = window.getSelection()
     const { activeElement } = window.document
-    debug.update('updateSelection', { selection: selection.toJSON() })
+
+    if (debug.enabled) {
+      debug.update('updateSelection', { selection: selection.toJSON() })
+    }
 
     // COMPAT: In Firefox, there's a but where `getSelection` can return `null`.
     // https://bugzilla.mozilla.org/show_bug.cgi?id=827585 (2018/11/07)
@@ -275,7 +278,7 @@ class Content extends React.Component {
       })
     }
 
-    if (updated) {
+    if (updated && debug.enabled) {
       debug('updateSelection', { selection, native, activeElement })
       debug.update('updateSelection-applied', { selection })
     }
@@ -486,11 +489,13 @@ class Content extends React.Component {
 
     debug('render', { props })
 
-    debug.update('render', {
-      text: value.document.text,
-      selection: value.selection.toJSON(),
-      value: value.toJSON(),
-    })
+    if (debug.enabled) {
+      debug.update('render', {
+        text: value.document.text,
+        selection: value.selection.toJSON(),
+        value: value.toJSON(),
+      })
+    }
 
     return (
       <Container

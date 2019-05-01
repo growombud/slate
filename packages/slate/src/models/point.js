@@ -355,7 +355,23 @@ class Point extends Record(DEFAULTS) {
     }
 
     const { key, offset, path } = this
-    const target = node.getNode(key || path)
+
+    // PERF: this function gets called a lot.
+    // to avoid creating the key -> path lookup table, we attempt to look up by path first.
+    let target = path && node.getNode(path)
+
+    if (!target) {
+      target = node.getNode(key)
+
+      if (target) {
+        // There is a misalignment of path and key
+        const point = this.merge({
+          path: node.getPath(key),
+        })
+
+        return point
+      }
+    }
 
     if (!target) {
       warning(false, "A point's `path` or `key` invalid and was reset!")
@@ -388,13 +404,31 @@ class Point extends Record(DEFAULTS) {
 
     if (target && path && key && key !== target.key) {
       warning(false, "A point's `key` did not match its `path`!")
+
+      // TODO: if we look up by path above and it differs by key, do we want to reset it to looking up by key?
     }
 
-    const point = this.merge({
+    let point = this.merge({
       key: target.key,
       path: path == null ? node.getPath(target.key) : path,
       offset: offset == null ? 0 : Math.min(offset, target.text.length),
     })
+
+    // COMPAT: There is an ambiguity, since a point can exist at the end of a
+    // text node, or at the start of the following one. To eliminate it we
+    // enforce that if there is a following text node, we always move it there.
+    if (point.offset === target.text.length) {
+      const block = node.getClosestBlock(point.path)
+      const next = block.getNextText()
+
+      if (next) {
+        point = point.merge({
+          key: next.key,
+          path: node.getPath(next.key),
+          offset: 0,
+        })
+      }
+    }
 
     return point
   }
