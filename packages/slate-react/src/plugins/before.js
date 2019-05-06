@@ -51,6 +51,8 @@ function BeforePlugin() {
    */
 
   function onBeforeInput(event, editor, next) {
+    // onBeforeInput running on composeEvents in firefox so need to catch
+    if (isComposing) return next()
     const isSynthetic = !!event.nativeEvent
     if (editor.readOnly) return
 
@@ -123,10 +125,9 @@ function BeforePlugin() {
     // The `count` check here ensures that if another composition starts
     // before the timeout has closed out this one, we will abort unsetting the
     // `isComposing` flag, since a composition is still in affect.
-    window.requestAnimationFrame(() => {
-      if (compositionCount > n) return
-      isComposing = false
-    })
+    // window.requestAnimationFrame(() => {
+    if (compositionCount > n) return
+    isComposing = false
 
     debug('onCompositionEnd', { event })
     next()
@@ -373,7 +374,6 @@ function BeforePlugin() {
    */
 
   function onInput(event, editor, next) {
-    if (isComposing) return
     if (editor.value.selection.isBlurred) return
     debug('onInput', { event })
     next()

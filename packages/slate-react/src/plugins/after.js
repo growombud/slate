@@ -411,8 +411,12 @@ function AfterPlugin(options = {}) {
 
   function onInput(event, editor, next) {
     debug('onInput')
-    const window = getWindow(event.target)
 
+    if (editor.isComposing()) {
+      return next()
+    }
+
+    const window = getWindow(event.target)
     // Get the selection point.
     const selection = window.getSelection()
     const { anchorNode } = selection
@@ -633,6 +637,7 @@ function AfterPlugin(options = {}) {
     debug('onSelect', { event })
     const window = getWindow(event.target)
     const selection = window.getSelection()
+
     setSelectionFromDom(window, editor, selection)
 
     // COMPAT: reset the `isMouseDown` state here in case a `mouseup` event
