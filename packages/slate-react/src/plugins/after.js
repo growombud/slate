@@ -412,6 +412,7 @@ function AfterPlugin(options = {}) {
   function onInput(event, editor, next) {
     debug('onInput')
 
+    // onInput events fire in firefox so need to return next() if composing so we don't input text in addition to language characters
     if (editor.isComposing()) {
       return next()
     }

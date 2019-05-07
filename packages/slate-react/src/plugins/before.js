@@ -51,7 +51,7 @@ function BeforePlugin() {
    */
 
   function onBeforeInput(event, editor, next) {
-    // onBeforeInput running on composeEvents in firefox so need to catch
+    // onBeforeInput running on composeEvents in safari so need to catch otherwise chracters disappear on selection from IME
     if (isComposing) return next()
     const isSynthetic = !!event.nativeEvent
     if (editor.readOnly) return
@@ -59,6 +59,7 @@ function BeforePlugin() {
     // COMPAT: If the browser supports Input Events Level 2, we will have
     // attached a custom handler for the real `beforeinput` events, instead of
     // allowing React's synthetic polyfill, so we need to ignore synthetics.
+
     if (isSynthetic && HAS_INPUT_EVENTS_LEVEL_2) return
 
     debug('onBeforeInput', { event })
@@ -128,6 +129,7 @@ function BeforePlugin() {
     // window.requestAnimationFrame(() => {
     if (compositionCount > n) return
     isComposing = false
+    // })
 
     debug('onCompositionEnd', { event })
     next()
