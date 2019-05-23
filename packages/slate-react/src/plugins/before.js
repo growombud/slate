@@ -376,6 +376,7 @@ function BeforePlugin() {
    */
 
   function onInput(event, editor, next) {
+    if (isComposing) return
     if (editor.value.selection.isBlurred) return
     debug('onInput', { event })
     next()
